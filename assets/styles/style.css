@@ -1,0 +1,66 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+form {
+    margin: 0 auto;
+    width: max(60%, 320px);
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.city-input {
+    border: 1px solid green;
+    font-size: 0;
+}
+
+.city-input label {
+    display: inline-block;
+    width: 35%;
+    font-size: 1.5rem;
+}
+
+.city-input input {
+    display: inline-block;
+    height: 30px;
+    width: 65%;
+    font-size: 1.5rem;
+}
+
+.radio-container, .results-container, .result {
+    border: 1px solid blue;
+}
+
+form > * {
+    margin: 10px auto;
+    width: max(65%, 300px);
+    padding: 5px;
+}
+
+.buttons-container, .results-container, .radio-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.radio-container input {
+    margin: 0 auto;
+    display: block;
+}
+
+.buttons-container > *, .results-container > * {
+    width: 25%;
+}
+
+.results-container {
+    font-size: max(1.8vw, 15px);
+}
+
+.buttons-container > * {
+    font-size: max(1.8vw, 15px);
+}
