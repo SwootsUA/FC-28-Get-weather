@@ -2,4 +2,7 @@
 .*
 !.gitignore
 
+# API keys and other settings
+config.js
+
 node_modules/
