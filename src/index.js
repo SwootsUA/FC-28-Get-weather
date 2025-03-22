@@ -1,6 +1,6 @@
 'use strict';
 
-function getWeather() {
+async function getWeather() {
     const tempElement = document.querySelector('#temp');
     const windSpeedElement = document.querySelector('#wind-speed');
     const humidityElement = document.querySelector('#humidity');
@@ -8,7 +8,7 @@ function getWeather() {
     const cityNameElement = document.querySelector('#city-name');
     const cityIdElement = document.querySelector('#city-id');
 
-    const chooseNamelement = document.querySelector('#radio-choose-name');
+    const chooseNameElement = document.querySelector('#radio-choose-name');
 
     function resetFields() {
         tempElement.innerText = '-';
@@ -19,17 +19,25 @@ function getWeather() {
     function fillFields(data) {
         tempElement.innerText = `${(data.temp - 273.15).toFixed(2)} °C`;
         windSpeedElement.innerText = `${data.wind.toFixed(2)} m/s`;
-        humidityElement.innerText = data.humidity.toFixed(2);
+        humidityElement.innerText = `${Math.round(data.humidity)}%`;
     }
 
-    if (chooseNamelement.checked) {
-        getWeatherByName(cityNameElement.value, config.WEATHER_API_KEY)
-            .then(fillFields)
-            .catch(resetFields);
-    } else {
-        getWeatherById(cityIdElement.value, config.WEATHER_API_KEY)
-            .then(fillFields)
-            .catch(resetFields);
+    try {
+        let data;
+        if (chooseNameElement.checked) {
+            data = await getWeatherByName(
+                cityNameElement.value,
+                config.WEATHER_API_KEY
+            );
+        } else {
+            data = await getWeatherById(
+                cityIdElement.value,
+                config.WEATHER_API_KEY
+            );
+        }
+        fillFields(data);
+    } catch (error) {
+        resetFields();
     }
 }
 
@@ -37,32 +45,34 @@ const weatherButton = document.querySelector('#weather-button');
 
 weatherButton.addEventListener('click', getWeather);
 
-function getWeatherByName(name, apiKey) {
-    return fetch(
+async function getWeatherByName(name, apiKey) {
+    const result = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${name}&appid=${apiKey}`
-    ).then(result =>
-        result
-            .json()
-            .then(jsonData => ({
-                temp: jsonData.main.temp,
-                wind: jsonData.wind.speed,
-                humidity: jsonData.main.humidity,
-            }))
-            .catch(error => ({errorMessage: error}))
     );
+    try {
+        const jsonData = await result.json();
+        return {
+            temp: jsonData.main.temp,
+            wind: jsonData.wind.speed,
+            humidity: jsonData.main.humidity,
+        };
+    } catch (error) {
+        throw new Error(error);
+    }
 }
 
-function getWeatherById(id, apiKey) {
-    return fetch(
+async function getWeatherById(id, apiKey) {
+    const result = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${apiKey}`
-    ).then(result =>
-        result
-            .json()
-            .then(jsonData => ({
-                temp: jsonData.main.temp,
-                wind: jsonData.wind.speed,
-                humidity: jsonData.main.humidity,
-            }))
-            .catch(error => ({errorMessage: error}))
     );
+    try {
+        const jsonData = await result.json();
+        return {
+            temp: jsonData.main.temp,
+            wind: jsonData.wind.speed,
+            humidity: jsonData.main.humidity,
+        };
+    } catch (error) {
+        throw new Error(error);
+    }
 }
