@@ -3,6 +3,6 @@
 !.gitignore
 
 # API keys and other settings
-config.js
+# config.js
 
 node_modules/
