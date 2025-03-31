@@ -10,10 +10,10 @@ async function weatherClickHandler() {
 
     const chooseByNameRadio = document.querySelector('#radio-choose-name');
 
-    function updateWeatherData(d = null) {
-        tempElement.innerText = d ? `${d.temp.toFixed(2)} °C` : '-';
-        windSpeedElement.innerText = d ? `${d.wind.toFixed(2)} m/s` : '-';
-        humidityElement.innerText = d ? `${Math.round(d.humidity)}%` : '-';
+    function updateWeatherData(data = null) {
+        tempElement.innerText = data ? `${data.temp.toFixed(2)} °C` : '-';
+        windSpeedElement.innerText = data ? `${data.wind.toFixed(2)} m/s` : '-';
+        humidityElement.innerText = data ? `${Math.round(data.humidity)}%` : '-';
     }
 
     try {
