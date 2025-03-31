@@ -49,8 +49,27 @@ async function getWeather(query, apiKey, isName) {
     }
 }
 
-const weatherButton = document.querySelector('#weather-button');
+function toggleInputs(e) {
+    const cityNameElement = document.querySelector('#city-name');
+    const cityIdElement = document.querySelector('#city-id');
 
-weatherButton.addEventListener('click', wetherClickHandler);
+    if (e.target.id === 'radio-choose-name') {
+        cityIdElement.disabled = true;
+        cityNameElement.disabled = false;
+    } else {
+        cityIdElement.disabled = false;
+        cityNameElement.disabled = true;
+    }
+}
 
 const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather`;
+
+const weatherButton = document.querySelector('#weather-button');
+
+const nameRadioInput = document.querySelector('#radio-choose-name');
+const idRadioInput = document.querySelector('#radio-choose-id');
+
+weatherButton.addEventListener('click', weatherClickHandler);
+
+nameRadioInput.addEventListener('click', toggleInputs);
+idRadioInput.addEventListener('click', toggleInputs);
