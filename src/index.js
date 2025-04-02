@@ -10,57 +10,31 @@ async function weatherClickHandler() {
 
     const chooseByNameRadio = document.querySelector('#radio-choose-name');
 
-    function updateWeatherData(data = null) {
-        tempElement.innerText = data ? `${data.temp.toFixed(2)} °C` : '-';
-        windSpeedElement.innerText = data ? `${data.wind.toFixed(2)} m/s` : '-';
-        humidityElement.innerText = data ? `${Math.round(data.humidity)}%` : '-';
+    const query = isUsingName ? cityNameElement.value : cityIdElement.value;
+
+    const data = await getWeather(query, config.WEATHER_API_KEY, chooseByNameRadio.checked);
+
+    let temperature = '-', windSpeed = '-', humidity = '-';
+
+    if (data && data.cod === 200) {
+        temperature = data.main.temp.toFixed(2) + ' °C';
+        windSpeed = data.wind.speed.toFixed(2) + ' m/s';
+        humidity = Math.round(data.main.humidity) + '%'; 
     }
 
-    try {
-        const isUsingName = chooseByNameRadio.checked;
-        const query = isUsingName ? cityNameElement.value : cityIdElement.value;
-
-        const {main, wind} = await getWeather(
-            query,
-            config.WEATHER_API_KEY,
-            isUsingName
-        );
-
-        const data = {
-            temp: main.temp,
-            wind: wind.speed,
-            humidity: main.humidity,
-        };
-
-        updateWeatherData(data);
-    } catch (error) {
-        updateWeatherData();
-    }
+    tempElement.innerText = temperature;
+    windSpeedElement.innerText = windSpeed;
+    humidityElement.innerText = humidity;
 }
 
 async function getWeather(query, apiKey, isName) {
     const result = await fetch(
         `${weatherApiUrl}?${isName ? 'q' : 'id'}=${query}&units=metric&appid=${apiKey}`
     );
-    try {
-        return await result.json();
-    } catch (error) {
-        throw new Error(error);
-    }
+
+    return await result.json();
 }
 
-function toggleInputs(e) {
-    const cityNameElement = document.querySelector('#city-name');
-    const cityIdElement = document.querySelector('#city-id');
-
-    if (e.target.id === 'radio-choose-name') {
-        cityIdElement.disabled = true;
-        cityNameElement.disabled = false;
-    } else {
-        cityIdElement.disabled = false;
-        cityNameElement.disabled = true;
-    }
-}
 
 const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather`;
 
@@ -70,6 +44,14 @@ const nameRadioInput = document.querySelector('#radio-choose-name');
 const idRadioInput = document.querySelector('#radio-choose-id');
 
 weatherButton.addEventListener('click', weatherClickHandler);
+
+function toggleInputs() {
+    const cityNameElement = document.querySelector('#city-name');
+    const cityIdElement = document.querySelector('#city-id');
+
+    cityNameElement.disabled = !nameRadioInput.checked;
+    cityIdElement.disabled = !idRadioInput.checked;
+}
 
 nameRadioInput.addEventListener('click', toggleInputs);
 idRadioInput.addEventListener('click', toggleInputs);
