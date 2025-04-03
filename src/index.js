@@ -10,7 +10,7 @@ async function weatherClickHandler() {
 
     const chooseByNameRadio = document.querySelector('#radio-choose-name');
 
-    const query = isUsingName ? cityNameElement.value : cityIdElement.value;
+    const query = chooseByNameRadio.checked ? cityNameElement.value : cityIdElement.value;
 
     const data = await getWeather(query, config.WEATHER_API_KEY, chooseByNameRadio.checked);
 
@@ -35,6 +35,10 @@ async function getWeather(query, apiKey, isName) {
     return await result.json();
 }
 
+function toggleInputs() {
+    cityNameElement.disabled = !nameRadioInput.checked;
+    cityIdElement.disabled = !idRadioInput.checked;
+}
 
 const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather`;
 
@@ -43,15 +47,9 @@ const weatherButton = document.querySelector('#weather-button');
 const nameRadioInput = document.querySelector('#radio-choose-name');
 const idRadioInput = document.querySelector('#radio-choose-id');
 
+const cityNameElement = document.querySelector('#city-name');
+const cityIdElement = document.querySelector('#city-id');
+
 weatherButton.addEventListener('click', weatherClickHandler);
-
-function toggleInputs() {
-    const cityNameElement = document.querySelector('#city-name');
-    const cityIdElement = document.querySelector('#city-id');
-
-    cityNameElement.disabled = !nameRadioInput.checked;
-    cityIdElement.disabled = !idRadioInput.checked;
-}
-
-nameRadioInput.addEventListener('click', toggleInputs);
-idRadioInput.addEventListener('click', toggleInputs);
+nameRadioInput.addEventListener('change', toggleInputs);
+idRadioInput.addEventListener('change', toggleInputs);
